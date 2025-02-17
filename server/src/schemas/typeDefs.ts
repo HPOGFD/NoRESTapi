@@ -6,6 +6,7 @@ const typeDefs = gql`
     username: String!
     email: String!
     savedBooks: [Book]
+    bookCount: Int
   }
 
   type Book {
@@ -24,6 +25,7 @@ const typeDefs = gql`
 
   type Query {
     getSingleUser(id: ID, username: String): User
+    me: User
   }
 
   type Mutation {
