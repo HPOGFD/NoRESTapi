@@ -5,14 +5,14 @@ const { signToken } = require('../services/auth');
 const resolvers = {
   Query: {
     // Get a single user by ID or username
-    getSingleUser: async (parent, { id, username }) => {
+    getSingleUser: async (_: any, { id, username }: { id: string, username: string }) => {
       return await User.findOne({ 
         $or: [{ _id: id }, { username }] 
       });
     },
 
     // Get logged-in user's details
-    me: async (parent, args, context) => {
+    me: async (_: any, args: any, context: any) => {
       if (context.user) {
         return await User.findById(context.user._id);
       }
@@ -22,7 +22,7 @@ const resolvers = {
 
   Mutation: {
     // Create a new user and return token
-    createUser: async (parent, { username, email, password }) => {
+    createUser: async (_: any, { username, email, password }: { username: string, email: string, password: string }) => {
       const user = await User.create({ username, email, password });
       if (!user) {
         throw new Error('Something went wrong!');
@@ -32,7 +32,7 @@ const resolvers = {
     },
 
     // Login a user and return token
-    login: async (parent, { username, email, password }) => {
+    login: async (_: any, { username, email, password }: { username: string, email: string, password: string }) => {
       const user = await User.findOne({ 
         $or: [{ username }, { email }] 
       });
@@ -50,7 +50,7 @@ const resolvers = {
     },
 
     // Save a book to the user's `savedBooks` field
-    saveBook: async (parent, { bookId, title, authors, description, image, link }, context) => {
+    saveBook: async (_: any, { bookId, title, authors, description, image, link }: { bookId: string, title: string, authors: string[], description: string, image: string, link: string }, context: any) => {
       if (!context.user) {
         throw new AuthenticationError('You need to be logged in!');
       }
@@ -65,7 +65,7 @@ const resolvers = {
     },
 
     // Remove a book from `savedBooks`
-    deleteBook: async (parent, { bookId }, context) => {
+    deleteBook: async (_: any, { bookId }: { bookId: string }, context: any) => {
       if (!context.user) {
         throw new AuthenticationError('You need to be logged in!');
       }
@@ -79,4 +79,4 @@ const resolvers = {
   },
 };
 
-module.exports = resolvers;
+export default resolvers;
