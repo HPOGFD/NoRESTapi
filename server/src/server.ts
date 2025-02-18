@@ -4,9 +4,11 @@ import db from './config/connection.js';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const secret = process.env.JWT_SECRET || 'mysecretsshhhhh';
 
 // Create Apollo Server
 const server = new ApolloServer({
@@ -26,9 +28,23 @@ const startApolloServer = async () => {
     '/graphql',
     expressMiddleware(server, {
       context: async ({ req }) => {
-        // Add your context logic here (e.g., authentication)
-        const token = req.headers.authorization || '';
-        return { token }; // Pass the token or user to the context
+        // Get the token from the authorization header
+        const token = req.headers.authorization?.split(' ')[1] || '';
+        
+        if (!token) {
+          return {}; // Return empty context if no token
+        }
+        
+        try {
+          // Verify and decode the token
+          const decoded = jwt.verify(token, secret);
+          
+          // Return the user information in the context
+          return { user: decoded };
+        } catch (err) {
+          console.error('Error verifying token:', err);
+          return {}; // Return empty context if token verification fails
+        }
       },
     })
   );

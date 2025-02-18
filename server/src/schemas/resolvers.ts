@@ -54,15 +54,23 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('You need to be logged in!');
       }
-
-      return await User.findByIdAndUpdate(
+    
+      // Update the user's savedBooks and return the updated user with savedBooks
+      const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
-        { 
-          $addToSet: { savedBooks: bookInput }
+        {
+          $addToSet: { savedBooks: bookInput }, // Add book to savedBooks if not already in the list
         },
         { new: true, runValidators: true }
-      );
+      ).exec();
+    
+      if (!updatedUser) {
+        throw new Error('User not found');
+      }
+    
+      return updatedUser.savedBooks; // Return the savedBooks array
     },
+    
 
     deleteBook: async (_: unknown, { bookId }: { bookId: string }, context: Context) => {
       if (!context.user) {

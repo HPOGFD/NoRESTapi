@@ -44,23 +44,30 @@ const SearchBooks = () => {
       console.error(err);
     }
   };
-
   const handleSaveBook = async (bookId: string) => {
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
     if (!bookToSave) return;
-
+  
     try {
+      // Ensure that the bookToSave matches the GraphQL mutation's expected input
       const { data } = await saveBook({
-        variables: { book: bookToSave }
+        variables: { bookInput: bookToSave } // Pass bookToSave as bookInput
       });
-
+  
       if (!data) {
-        throw new Error('something went wrong!');
+        throw new Error('Something went wrong!');
       }
+  
+      // Optionally update UI or refetch data to reflect the saved book
+      console.log('Book saved successfully:', data);
     } catch (err) {
-      console.error(err);
+      // Enhanced error handling
+      console.error('Error saving book:', err);
+      alert('There was an error saving the book. Please try again.');
     }
   };
+  
+  
 
   return (
     <>
@@ -85,6 +92,7 @@ const SearchBooks = () => {
         <div>
           {searchedBooks.map((book) => (
             <div key={book.bookId}>
+              <img src={book.image} alt={`${book.title} book`} />
               <h3>{book.title}</h3>
               <p>Authors: {book.authors.join(', ')}</p>
               <p>{book.description}</p>
