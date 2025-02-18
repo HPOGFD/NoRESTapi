@@ -44,12 +44,18 @@ const SearchBooks = () => {
       console.error(err);
     }
   };
+ 
+
   const handleSaveBook = async (bookId: string) => {
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    if (!bookToSave) return;
+    if (!bookToSave) {
+      console.error('Book not found');
+      return;
+    }
+  
+    console.log("Book to save:", bookToSave); // Log the object before sending
   
     try {
-      // Ensure that the bookToSave matches the GraphQL mutation's expected input
       const { data } = await saveBook({
         variables: { bookInput: bookToSave } // Pass bookToSave as bookInput
       });
@@ -58,14 +64,13 @@ const SearchBooks = () => {
         throw new Error('Something went wrong!');
       }
   
-      // Optionally update UI or refetch data to reflect the saved book
       console.log('Book saved successfully:', data);
     } catch (err) {
-      // Enhanced error handling
       console.error('Error saving book:', err);
       alert('There was an error saving the book. Please try again.');
     }
   };
+  
   
   
 
