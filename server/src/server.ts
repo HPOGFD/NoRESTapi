@@ -1,65 +1,44 @@
 import express from 'express';
 import path from 'node:path';
-import db from './config/connection.js';
-import { ApolloServer } from '@apollo/server';
+import type { Request, Response } from 'express';
+import db from './config/connection.js'
+import { ApolloServer } from '@apollo/server';// Note: Import from @apollo/server-express
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
-import jwt from 'jsonwebtoken';
+import { authenticateToken } from './middleware/Auth.js';
 
-const app = express();
-const PORT = process.env.PORT || 3001;
-const secret = process.env.JWT_SECRET || 'mysecretsshhhhh';
-
-// Create Apollo Server
 const server = new ApolloServer({
   typeDefs,
-  resolvers,
+  resolvers
 });
 
 const startApolloServer = async () => {
   await server.start();
+  await db();
 
-  // Middleware
-  app.use(express.urlencoded({ extended: true }));
+  const PORT = process.env.PORT || 3001;
+  const app = express();
+
+  app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  // Apply Apollo Server middleware
-  app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: async ({ req }) => {
-        // Get the token from the authorization header
-        const token = req.headers.authorization?.split(' ')[1] || '';
-        
-        if (!token) {
-          return {}; // Return empty context if no token
-        }
-        
-        try {
-          // Verify and decode the token
-          const decoded = jwt.verify(token, secret);
-          
-          // Return the user information in the context
-          return { user: decoded };
-        } catch (err) {
-          console.error('Error verifying token:', err);
-          return {}; // Return empty context if token verification fails
-        }
-      },
-    })
-  );
+  app.use('/graphql', expressMiddleware(server as any,
+    {
+      context: authenticateToken as any
+    }
+  ));
 
-  // Serve static assets in production
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (_req: Request, res: Response) => {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    });
   }
 
-  // Start the server
-  db.once('open', () => {
-    app.listen(PORT, () => {
-      console.log(`🌍 Now listening on localhost:${PORT}`);
-      console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
-    });
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
   });
 };
 

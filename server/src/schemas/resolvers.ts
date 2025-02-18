@@ -29,7 +29,7 @@ const resolvers = {
       if (!user) {
         throw new Error('Something went wrong!');
       }
-      const token = signToken(user); // Use signToken to generate JWT
+      const token = signToken(user.username, user.email, user._id); // Use signToken to generate JWT
       return { token, user };
     },
 
@@ -46,7 +46,7 @@ const resolvers = {
         throw new AuthenticationError('Wrong password!');
       }
 
-      const token = signToken(user); // Use signToken to generate JWT
+      const token = signToken(user.username, user.email, user._id); // Use signToken to generate JWT
       return { token, user };
     },
 
@@ -55,12 +55,10 @@ const resolvers = {
         throw new AuthenticationError('You need to be logged in!');
       }
     
-      // Update the user's savedBooks and return the updated user with savedBooks
+      // Find and update the user
       const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
-        {
-          $addToSet: { savedBooks: bookInput }, // Add book to savedBooks if not already in the list
-        },
+        { $addToSet: { savedBooks: bookInput } }, // Add book to savedBooks if not already in the list
         { new: true, runValidators: true }
       ).exec();
     
@@ -68,8 +66,9 @@ const resolvers = {
         throw new Error('User not found');
       }
     
-      return updatedUser.savedBooks; // Return the savedBooks array
+      return updatedUser; // ✅ Return full user object
     },
+    
     
 
     deleteBook: async (_: unknown, { bookId }: { bookId: string }, context: Context) => {

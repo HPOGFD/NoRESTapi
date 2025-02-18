@@ -46,6 +46,7 @@ const SavedBooks = () => {
         <div>
           {userData.savedBooks?.map((book: Book) => (
             <div key={book.bookId}>
+              <img src={book.image} alt={`${book.title} book`} />
               <h3>{book.title}</h3>
               <p>Authors: {book.authors.join(', ')}</p>
               <p>{book.description}</p>
