@@ -46,49 +46,38 @@ To get started, clone the repository and install the necessary dependencies:
 git clone https://github.com/HPOGFD/NoRESTapi.git
 cd NoRESTapi
 
+*Backend Setup*
+- Create a .env file at the root of the backend folder.
+- Add the following environment variables to .env:
 
-Backend Setup:
-
-Create a .env file at the root of the backend folder.
-
-Add the following environment variables to .env:
-
-text
 MONGODB_URI='your-mongo-db-uri-here'
 JWT_SECRET_KEY='your-secret-key-here'
-Install the backend dependencies:
 
-bash
-cd server
-npm install
-Start the backend server:
+*Install the backend dependencies:*
+- cd server
+- npm install
 
-bash
-npm run dev
-Frontend Setup:
+*Start the backend server:*
+- npm run dev
 
-Install frontend dependencies:
+*Install frontend dependencies:*
+- cd client
+- npm install
 
-bash
-cd client
-npm install
-Start the frontend server:
+*Start the frontend server:*
+- npm start
+- Now, you can access the frontend by navigating to http://localhost:3000 in your browser, and the API will be running at http://localhost:3001.
 
-bash
-npm start
-Now, you can access the frontend by navigating to http://localhost:3000 in your browser, and the API will be running at http://localhost:3001.
+*Usage*
+- Search for Books: Use the search functionality to find books.
+- Save Books: Once logged in, click the "Save" button to add books to your saved list.
+- View Saved Books: Access your profile page to see the list of saved books.
+- Authentication: Log in with your credentials to access the app.
 
-Usage
-Search for Books: Use the search functionality to find books.
+*Contributing*
+-Feel free to open issues or submit pull requests for any improvements or bug fixes. All contributions are welcome!
 
-Save Books: Once logged in, click the "Save" button to add books to your saved list.
+*License*
+- This project is licensed under the MIT License - see the LICENSE file for details.
 
-View Saved Books: Access your profile page to see the list of saved books.
-
-Authentication: Log in with your credentials to access the app.
-
-Contributing
-Feel free to open issues or submit pull requests for any improvements or bug fixes. All contributions are welcome!
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+- Special thanks to AI outthere. 
