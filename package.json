@@ -3,18 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "server/server.js",
- "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "start": "npm run server",
-  "start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
-  "server": "cd server && npm start",
-  "server:dev": "cd server && npm run dev",
-  "install": "cd server && npm i && cd ../client && npm i",
-  "client:build": "cd client && npm run build && mv build dist",
-  "client:dev": "cd client && npm run dev",
-  "build": "concurrently \"cd server && npm run build\" \"cd client && npm run build\"",
-  "seed": "cd server && npm run seed",
-   "render-build": "cd client && npm install && npm run build"
+"scripts": {
+"test": "echo \"Error: no test specified\" && exit 1",
+"start": "npm run server",
+"start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
+"server": "cd server && npm start",
+"server:dev": "cd server && npm run dev",
+"install": "cd server && npm i && cd ../client && npm i",
+"client:build": "cd client && npm run build && mv build dist",
+"client:dev": "cd client && npm run dev",
+"build": "concurrently \"cd server && npm run build\" \"cd client && npm run build\"",
+"seed": "cd server && npm run seed",
+"render-build": "cd server && npm install && npm run build && cd ../client && npm install && npm run build"
 },
 
 "keywords": [],
